@@ -1,3 +1,5 @@
+#!/usr/local/bin/python3
+
 import random
 
 def main(sizeOfArray):
@@ -21,9 +23,16 @@ def main(sizeOfArray):
 		data[a][d] = 1
 		a = d
 
-	for z in data:
-		print(z)
-		print(",")
+	for i in range(sizeOfArray):
+		data[i][i] = 0
+	
+	print('[', end="")
+	for z in range(len(data)):
+		print(data[z], end="")
+		if z != len(data)-1:
+			print(",")
+		else:
+			print(']')
 
 if __name__ == '__main__':
-    main(1500)
+    main(15)
