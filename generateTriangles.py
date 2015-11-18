@@ -34,5 +34,7 @@ def main(sizeOfArray):
 		else:
 			print(']')
 
+	return data
+
 if __name__ == '__main__':
     main(15)

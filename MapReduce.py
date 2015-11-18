@@ -14,6 +14,8 @@ Current Time Complexity:  ((n^4)/(w^3)) + (w^3)
 
 import sys
 from threading import Thread
+import generateTriangles as TriPower
+import time
 
 Triangles = []
 PotentialTriangles = []
@@ -84,25 +86,13 @@ def Worker(data, start, end):
     return (thread, result)
 
 
-def main(numWorkers):
+def main(numWorkers, dimensionSize):
     global Triangles
     global PotentialTriangles
     # Save this even if we read in file
-    data = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1],
-[0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1],
-[0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1],
-[0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-[1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1],
-[0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1],
-[0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1],
-[0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
-[0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1],
-[0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1],
-[1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0]]
+    data = TriPower.main(dimensionSize)
+
+    start = time.time()
 
     while len(data) % numWorkers != 0 or numWorkers > len(data):
         numWorkers -= 1
@@ -145,9 +135,12 @@ def main(numWorkers):
     for x in sorted(Triangles):
         print(x)
 
+    print('\nTook %.5f seconds' % (time.time() - start))
+
     return Triangles
 
 if __name__ == '__main__':
-    main(6)
+    main(int(sys.argv[1]), int(sys.argv[2]))
+    #main(6, 150)
     # Make this read in file and worker number from command line
     # Also add comments
