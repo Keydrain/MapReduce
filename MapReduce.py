@@ -13,9 +13,12 @@ Current Time Complexity:  ((n^4)/(w^3)) + (w^3)
 """
 
 import sys
+from threading import Thread
 
+Triangles = []
+PotentialTriangles = []
 
-def FindTriangles(data, start, end):
+def FindTriangles(data, start, end, result):
 
     TriPoints = []
     PotentialTriPoints = []
@@ -41,7 +44,8 @@ def FindTriangles(data, start, end):
     PotentialTriPoints = [list(x) for x in set(
         tuple(sorted(x)) for x in PotentialTriPoints)]
 
-    return (TriPoints, PotentialTriPoints)
+    result.append(TriPoints)
+    result.append(PotentialTriPoints)
 
 
 def ResolvePotentials(data):
@@ -74,7 +78,15 @@ def ResolvePotentials(data):
     return TriPoints
 
 
+def Worker(data, start, end):
+    result = []
+    thread = Thread(target=FindTriangles, args=(data, start, end, result))
+    return (thread, result)
+
+
 def main(numWorkers):
+    global Triangles
+    global PotentialTriangles
     # Save this even if we read in file
     data = [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1],
@@ -92,15 +104,14 @@ def main(numWorkers):
     while len(data) % numWorkers != 0 or numWorkers > len(data):
         numWorkers -= 1
 
-    dataParts = []
-    step = 0
     stepSize = len(data) // numWorkers
-    Triangles = [0] * numWorkers
-    PotentialTriangles = [0] * numWorkers
-    for i in range(numWorkers):
-        Triangles[i], PotentialTriangles[i] = FindTriangles(
-            data, step, step + stepSize - 1)
-        step += stepSize
+    threads = [Worker(data, step, step + stepSize - 1) for step in range(0, len(data), stepSize)]
+    for t in threads:
+        t[0].start()
+    for t in threads:
+        t[0].join()
+        Triangles.append(t[1][0])
+        PotentialTriangles.append(t[1][1])
 
     print('Data:')
     for x in data:
@@ -134,6 +145,6 @@ def main(numWorkers):
     return Triangles
 
 if __name__ == '__main__':
-    main(3)
+    main(6)
     # Make this read in file and worker number from command line
     # Also add comments
