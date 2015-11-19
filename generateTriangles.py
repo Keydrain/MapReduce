@@ -3,6 +3,8 @@
 import random
 
 def main(sizeOfArray):
+	'''Generates a 2D graph of vertexes that contains an unknown number of triangles.
+	'''
 
 	data = [[0 for x in range(sizeOfArray)] for x in range(sizeOfArray)]
 	
@@ -24,7 +26,7 @@ def main(sizeOfArray):
 		a = d
 
 	for i in range(sizeOfArray):
-		data[i][i] = 0
+		data[i][i] = 0 #Cancel out looping back on ourselves
 	
 	#print('[', end="")
 	#for z in range(len(data)):

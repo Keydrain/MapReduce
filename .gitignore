@@ -4,3 +4,8 @@
 .flooignore
 
 *.pyc
+.Rproj.user
+
+.Rhistory
+
+.RData
