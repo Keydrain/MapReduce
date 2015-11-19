@@ -2,3 +2,5 @@
 .floo
 
 .flooignore
+
+*.pyc

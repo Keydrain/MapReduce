@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-Author: 	Clint Cooper, Hunter Oehrtman
+Author: 	Clint Cooper, Hunter Oehrtman, Clayton Walker
 Date:   	11/13/15 (3 hours)
 CSCI 460:	Final Project
 
@@ -13,14 +13,17 @@ Current Time Complexity:  ((n^4)/(w^3)) + (w^3)
 """
 
 import sys
-from threading import Thread
+from multiprocessing import Process, Pool
 import generateTriangles as TriPower
 import time
 
 Triangles = []
 PotentialTriangles = []
 
-def FindTriangles(data, start, end, result):
+def FindTriangles(val):
+    data = val[0]
+    start = val[1]
+    end = val[2]
 
     TriPoints = []
     PotentialTriPoints = []
@@ -46,8 +49,7 @@ def FindTriangles(data, start, end, result):
     PotentialTriPoints = [list(x) for x in set(
         tuple(sorted(x)) for x in PotentialTriPoints)]
 
-    result.append(TriPoints)
-    result.append(PotentialTriPoints)
+    return (TriPoints, PotentialTriPoints)
 
 
 def ResolvePotentials(data):
@@ -80,12 +82,6 @@ def ResolvePotentials(data):
     return TriPoints
 
 
-def Worker(data, start, end):
-    result = []
-    thread = Thread(target=FindTriangles, args=(data, start, end, result))
-    return (thread, result)
-
-
 def main(numWorkers, dimensionSize):
     global Triangles
     global PotentialTriangles
@@ -97,14 +93,14 @@ def main(numWorkers, dimensionSize):
     while len(data) % numWorkers != 0 or numWorkers > len(data):
         numWorkers -= 1
 
+    pool = Pool(processes = numWorkers)
+
     stepSize = len(data) // numWorkers
-    threads = [Worker(data, step, step + stepSize - 1) for step in range(0, len(data), stepSize)]
-    for t in threads:
-        t[0].start()
-    for t in threads:
-        t[0].join()
-        Triangles.append(t[1][0])
-        PotentialTriangles.append(t[1][1])
+    results = [pool.map(FindTriangles, [[data, step, step + stepSize - 1]]) for step in range(0, len(data), stepSize)]
+
+    for r in results:
+        Triangles.append(r[0][0])
+        PotentialTriangles.append(r[0][1])
 
     print('Data:')
     for x in data:
@@ -135,12 +131,10 @@ def main(numWorkers, dimensionSize):
     for x in sorted(Triangles):
         print(x)
 
-    print('\nTook %.5f seconds' % (time.time() - start))
+    print('\n%.5f seconds' % (time.time() - start))
 
     return Triangles
 
 if __name__ == '__main__':
     main(int(sys.argv[1]), int(sys.argv[2]))
-    #main(6, 150)
-    # Make this read in file and worker number from command line
-    # Also add comments
+    #main(20, 200)

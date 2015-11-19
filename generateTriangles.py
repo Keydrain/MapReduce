@@ -26,13 +26,13 @@ def main(sizeOfArray):
 	for i in range(sizeOfArray):
 		data[i][i] = 0
 	
-	print('[', end="")
-	for z in range(len(data)):
-		print(data[z], end="")
-		if z != len(data)-1:
-			print(",")
-		else:
-			print(']')
+	#print('[', end="")
+	#for z in range(len(data)):
+	#	print(data[z], end="")
+	#	if z != len(data)-1:
+	#		print(",")
+	#	else:
+	#		print(']')
 
 	return data
 
