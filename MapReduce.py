@@ -126,7 +126,7 @@ def main(numWorkers, dimensionSize):
     NewPotentialTriangles = sorted([list(x) for x in set(tuple(sorted(x)) for x in [item for sublist in PotentialTriangles for item in sublist])])
 
     # Take the results of the potentials and find additional triangles
-    NewTriangles = ResolvePotentials(PotentialTriangles)
+    NewTriangles = ResolvePotentials(NewPotentialTriangles)
 
     # Prints of the data:
     print('Data:')
